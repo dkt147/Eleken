@@ -53,6 +53,10 @@ header("Location:index.php");
         </li>
         <li><a href="#4a" data-toggle="tab">Categories</a>
         </li>
+        <li><a href="#5a" data-toggle="tab">Expenses</a>
+        </li>
+        <li><a href="#6a" data-toggle="tab">Summary</a>
+        </li>
     </ul>
 
     <div class="tab-content clearfix">
@@ -325,6 +329,133 @@ header("Location:index.php");
                 </div>
             </div>
         </div>
+        <div class="tab-pane" id="5a">
+            <br>
+
+            <h2>Expenses <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#expenseModal" data-whatever="@mdo">Add new</button></h2>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="paginationFull4" class="table" width="100%">
+                            <thead>
+                            <tr>
+                                <th class="th-sm">Id
+                                </th>
+                                <th class="th-sm">Project
+                                </th>
+                                <th class="th-sm">Group
+                                </th>
+                                <th class="th-sm">Event
+                                </th>
+                                <th class="th-sm">Amount
+                                </th>
+                                <th class="th-sm">Date
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <?php
+                            include 'connection.php';
+                            $query = "SELECT  a_project.*,a_project.name as p_name,a_group.*,a_group.name as g_name,a_expenses.* FROM a_expenses JOIN a_project ON a_project.id = a_expenses.project_id JOIN a_group ON a_group.id = a_expenses.group_id";
+                            $result = mysqli_query($con,$query);
+                            while($row = mysqli_fetch_assoc($result)){?>
+                                <tr>
+                                    <td><?php echo $row['id']?></td>
+                                    <td><?php echo $row['p_name']?></td>
+                                    <td><?php echo $row['g_name']?></td>
+                                    <td><?php echo $row['event']?></td>
+                                    <td><?php echo $row['amount']?></td>
+                                    <td><?php echo $row['created_at']?></td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                            </tbody>
+                        </table> </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="6a">
+            <br>
+
+            <h2>Summary
+                <select class="form-control" name="sp_name" id="sp_name" style="width: 230px;display: inline">
+                    <option selected disabled>Project</option>
+                    <?php
+                    $query = "SELECT * FROM a_project";
+                    $result = mysqli_query($con,$query);
+                    while($row = mysqli_fetch_assoc($result)){?>
+                        ?>
+                        <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+                <select class="form-control" name="sp_name" id="sp_name" style="width: 100px;display: inline">
+                    <option selected disabled>Group</option>
+                    <?php
+                    $query = "SELECT * FROM a_group";
+                    $result = mysqli_query($con,$query);
+                    while($row = mysqli_fetch_assoc($result)){?>
+                        ?>
+                        <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+
+                <input type="date" name="date" id="date" class="form-control" style="width: 130px;display: inline">
+                <input type="month" name="month" id="month" class="form-control" style="width: 130px;display: inline">
+<!--                <input name="year" id="year" class="date-own form-control" style="width: 130px;display: inline" type="number" min="1900" max="2099" step="1" value="2016">-->
+
+
+            </h2>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="paginationFull4" class="table" width="100%">
+                            <thead>
+                            <tr>
+                                <th class="th-sm">Id
+                                </th>
+                                <th class="th-sm">Project
+                                </th>
+                                <th class="th-sm">Group
+                                </th>
+                                <th class="th-sm">Event
+                                </th>
+                                <th class="th-sm">Amount
+                                </th>
+                                <th class="th-sm">Date
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <?php
+                            include 'connection.php';
+                            $query = "SELECT  a_project.*,a_project.name as p_name,a_group.*,a_group.name as g_name,a_expenses.* FROM a_expenses JOIN a_project ON a_project.id = a_expenses.project_id JOIN a_group ON a_group.id = a_expenses.group_id";
+                            $result = mysqli_query($con,$query);
+                            while($row = mysqli_fetch_assoc($result)){?>
+                                <tr>
+                                    <td><?php echo $row['id']?></td>
+                                    <td><?php echo $row['p_name']?></td>
+                                    <td><?php echo $row['g_name']?></td>
+                                    <td><?php echo $row['event']?></td>
+                                    <td><?php echo $row['amount']?></td>
+                                    <td><?php echo $row['created_at']?></td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                            </tbody>
+                        </table> </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -459,6 +590,68 @@ header("Location:index.php");
     </div>
 </div>
 
+<!--Add new Expense Modal Form-->
+<div class="modal fade" id="expenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Expense</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Category:</label>
+                        <select class="form-control" name="project_category" id="ep_name">
+                            <?php
+                            $query = "SELECT * FROM a_project";
+                            $result = mysqli_query($con,$query);
+                            while($row = mysqli_fetch_assoc($result)){?>
+                                ?>
+                                <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Category:</label>
+                        <select class="form-control" name="project_category" id="eg_name">
+                            <?php
+                            $query = "SELECT * FROM a_group";
+                            $result = mysqli_query($con,$query);
+                            while($row = mysqli_fetch_assoc($result)){?>
+                                ?>
+                                <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Event</label>
+                        <input type="text" name="e_event" class="form-control" id="e_event">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Amount</label>
+                        <input type="number" name="e_amount" class="form-control" id="e_amount">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary addNewExpense">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
@@ -476,6 +669,9 @@ header("Location:index.php");
             "pagingType": "full"
         });
         $('#paginationFull3').DataTable({
+            "pagingType": "full"
+        });
+        $('#paginationFull4').DataTable({
             "pagingType": "full"
         });
 
@@ -580,6 +776,33 @@ header("Location:index.php");
             $("#click_div").css("display", "block");
         });
 
+        $(".addNewExpense").click(function(event) {
+            var ep_name = document.getElementById("ep_name").value
+            var eg_name = document.getElementById("eg_name").value
+            var e_event = document.getElementById("e_event").value
+            var e_amount = document.getElementById("e_amount").value
+
+
+
+            if(ep_name != '' && eg_name != '' && e_event != '' && e_amount != ''){
+                console.log(ep_name,eg_name,e_event,e_amount);
+
+                $.ajax({
+                    url : "_add_expense.php",
+                    type : "POST",
+                    data:{ep_name:ep_name,eg_name:eg_name,e_event:e_event,e_amount:e_amount},
+                    success : function(data){
+                        if(data == 1){
+                            alert("Expense Added!")
+                            window.location.href = 'project.php'
+                        }
+                    }
+                });
+
+                }else{
+                alert('Some Fields are empty!')
+            }
+        });
 
 
     });
