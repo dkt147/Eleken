@@ -421,25 +421,31 @@ header("Location:index.php");
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="col-form-label">Mode:</label>
-                        <select class="form-control" name="mode" id="mode" required>
+                        <select class="form-control clickCheque" name="mode" id="mode" required>
                                 <option selected disabled> Select Payment Mode</option>
                             <option value="cash">Cash</option>
-                            <option value="cheque" onclick="changeApp()">Cheque</option>
+                            <option value="cheque">Cheque</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Bank:</label>
-                        <input type="text" name="bank" class="form-control" id="bank">
+                        <select class="form-control" name="bank" id="bank" required>
+                            <option selected disabled> Select Bank</option>
+                            <option value="HBL">Habib Bank Limited (HBL)</option>
+                            <option value="BAHL">Bank Al Habib (BAHL)</option>
+                            <option value="ABL">Allied Bank Limited (ABL)</option>
+                            <option value="AKBL">Askari Bank Limited (AKBL)</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Cash</label>
-                        <input type="text" name="cash" class="form-control" id="cash">
+                        <label for="recipient-name" class="col-form-label">Amount</label>
+                        <input type="number" name="cash" class="form-control" id="cash">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;" id="click_div">
                         <label for="recipient-name" class="col-form-label">Cheque #</label>
-                        <input type="text" name="cash" class="form-control" id="cheque">
+                        <input type="text" name="cash" class="form-control" id="cheque" minlength="10" maxlength="10">
                     </div>
 
 
@@ -565,9 +571,14 @@ header("Location:index.php");
             alert(id)
         }
 
-        function changeApp() {
-            document.getElementById("click_div").style.display = "inline";
-        }
+
+        $(".clickCheque").on('change',function(event) {
+            var mode = $(this).val()
+            if(mode == 'cheque'){
+
+            }
+            $("#click_div").css("display", "block");
+        });
 
 
 
