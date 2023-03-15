@@ -1,0 +1,109 @@
+/**
+* Quick explanation on values.
+*
+* 1. Define the gap between the balls. The value is unitless, so it's easier to
+*    calculate the wrapper of the element. The number 1 is equal to the size of ball.
+* 2. Calculations to find out the width of wrapper. You don't have to worry much.
+*    It just works.
+* 3. Since we are using absolute positioning to set where they should be located,
+*    we also need to identify the space between two balls. It's also used in animation
+*    to find how far to move the ball
+* 4. Used for inspecting the behavior of the wrapper. Play around with the values of
+*    `--loading-spinner-size` and `--loading-spinner-gap` and remove the comment to see
+*    how the parent wraps the child elements.
+*
+* Reference: https://loading.io/css/
+*/
+
+:root {
+    --loading-spinner-size: 2rem;
+    --loading-spinner-gap: 1; /* [1] */
+    --loading-spinner-wrapper: calc(var(--loading-spinner-size) * 3 + var(--loading-spinner-gap) * var(--loading-spinner-size) * 2); /* [2] */
+    --loading-spinner-color: #222;
+
+    --animation-timing: cubic-bezier(0, 1, 1, 0);
+    --animation-duration: 600ms;
+    --animation-count: infinite;
+}
+
+.loading {
+    --spacer: calc(var(--loading-spinner-size) * var(--loading-spinner-gap) + var(--loading-spinner-size)); /* [3] */
+    position: relative;
+    width: var(--loading-spinner-wrapper);
+    height: var(--loading-spinner-size);
+    /* border: 1px solid red; */ /* [4] */
+}
+
+.loading span {
+    position: absolute;
+    top: 0;
+    width: var(--loading-spinner-size);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: var(--loading-spinner-color);
+    animation-timing-function: var(--animation-timing);
+}
+
+.loading span:nth-child(1) {
+    left: 0;
+    animation: scale-up var(--animation-duration) var(--animation-count);
+}
+
+.loading span:nth-child(2) {
+    left: 0;
+    animation: move-right var(--animation-duration) var(--animation-count);
+}
+
+.loading span:nth-child(3) {
+    left: calc(var(--spacer) * 1);
+    animation: move-right var(--animation-duration) var(--animation-count);
+}
+
+.loading span:nth-child(4) {
+    left: calc(var(--spacer) * 2);
+    animation: scale-down var(--animation-duration) var(--animation-count);
+}
+
+@keyframes scale-up {
+    from { transform: scale(0) }
+    to   { transform: scale(1) }
+}
+
+@keyframes scale-down {
+    from { transform: scale(1) }
+    to   { transform: scale(0) }
+}
+
+@keyframes move-right {
+    from { transform: translate(0, 0)    }
+    to   { transform: translate(var(--spacer), 0) } /* [3] */
+}
+
+/* General styling */
+* { box-sizing: border-box }
+
+.loaderMainContainer {
+    z-index: 100;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.fade-bg{
+    z-index: 50;
+    position: absolute;
+    background:#b2b0b0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity:0.5;
+}
