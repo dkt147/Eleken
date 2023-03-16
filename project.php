@@ -369,6 +369,45 @@ header("Location:index.php");
                     </div>
 
                     <div class="form-group">
+                        <label for="clint-name" class="col-form-label">Clint Name:</label>
+                        <input type="text" name="clint_amount" class="form-control" id="clint_name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clint-amount" class="col-form-label">Clint Amount:</label>
+                        <input type="number" name="clint_amount" class="form-control" id="clint_amount">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="clint-tax" class="col-form-label">Clint Tax:</label>
+                        <select disabled class="form-control" name="status" id="clint_tax">
+                            <option selected disabled>Select</option>
+                            <option value="13">13%</option>
+                            <option value="7">7%</option>
+                            <option value="3">3%</option>
+                        </select>
+                    </div>
+
+                    <div style="display:none" id="clint_tax_amount_div" class="form-group">
+                        <input class="form-control" disabled type="text" id="clint_tax_amount">
+                    </div>
+
+                    <div style="display:none" id="govt_tax_main_div" class="form-group">
+                        <label for="govt-tax" class="col-form-label">Govt Tax:</label>
+                        <select class="form-control" name="status" id="govt_tax">
+                            <option selected disabled>Select</option>
+                            <option value="10">10%</option>
+                            <option value="7">7%</option>
+                            <option value="3">3%</option>
+                        </select>
+                    </div>
+
+                    <div style="display:none" id="govt_tax_amount_div" class="form-group">
+                        <input class="form-control" disabled type="text" id="govt_tax_amount">
+                    </div>
+
+                    <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Assign to:</label>
                         <select class="form-control" id="project_assign">
                             <?php
@@ -406,7 +445,7 @@ header("Location:index.php");
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Category:</label>
+                        <label for="recipient-name" class="col-form-label">Project:</label>
                         <select class="form-control" name="project_category" id="rp_name">
                             <?php
                             $query = "SELECT * FROM a_project";
@@ -427,19 +466,29 @@ header("Location:index.php");
                             <option value="cheque" onclick="changeApp()">Cheque</option>
                         </select>
                     </div>
-                    <div class="form-group">
+
+                    <div id="cash_mode_main_div" style="display:none"  class="form-group">
+                        <label for="message-text" class="col-form-label">Cash Mode:</label>
+                        <select class="form-control" name="mode" id="cash_mode" required>
+                            <option selected disabled> Select Cash Mode</option>
+                            <option value="cash_hand">Cash in hand</option>
+                            <option value="cash_bank" >Cash in Bank</option>
+                        </select>
+                    </div>
+
+                    <div id="bank_main_div" style="display:none" class="form-group">
                         <label for="recipient-name" class="col-form-label">Bank:</label>
                         <input type="text" name="bank" class="form-control" id="bank">
                     </div>
 
-                    <div class="form-group">
+                    <div id="cash_main_div" style="display:none" class="form-group">
                         <label for="recipient-name" class="col-form-label">Cash</label>
                         <input type="text" name="cash" class="form-control" id="cash">
                     </div>
 
-                    <div class="form-group">
+                    <div id="cheque_main_div" style="display:none" class="form-group">
                         <label for="recipient-name" class="col-form-label">Cheque #</label>
-                        <input type="text" name="cash" class="form-control" id="cheque">
+                        <input type="text" name="cash"  class="form-control" id="cheque">
                     </div>
 
 
@@ -478,20 +527,72 @@ header("Location:index.php");
             var name = document.getElementById("project_name").value
             var status = document.getElementById("project_status").value
             var project_assign = document.getElementById("project_assign").value
+            var clint_name=document.getElementById("clint_name").value
+            var clint_amount=document.getElementById("clint_amount").value
+            var clint_tax=document.getElementById("clint_tax_amount").value
+            var govt_tax=document.getElementById("govt_tax_amount").value
 
-            console.log(project_category,name,status,project_assign)
+            var final_clint_tax=clint_tax.split(" ");
+            var final_govt_tax=govt_tax.split(" ");
 
-            $.ajax({
-                url : "_add_project.php",
-                type : "POST",
-                data:{name:name,category:project_category,status:status,project_assign:project_assign},
-                success : function(data){
-                   if(data == 1){
-                       alert("Successfully Added!")
-                       window.location.href = 'project.php'
-                   }
-                }
+            console.log(project_category,name,status,project_assign,clint_name,clint_amount,final_clint_tax,final_govt_tax)
+
+            if(project_category != null && name !== '' && status != null && project_assign != null
+                && clint_name !== '' && clint_amount !== '' && clint_tax != null && govt_tax != null) {
+
+
+                $.ajax({
+                    url: "_add_project.php",
+                    type: "POST",
+                    data: {project_name: name, category: project_category, status: status, project_assign: project_assign ,
+                        clint_name : clint_name ,clint_amount : clint_amount ,clint_tax : final_clint_tax[0] ,govt_tax :final_govt_tax[0] },
+                    success: function (data) {
+                        if (data == 1) {
+                            alert("Successfully Added!")
+                            window.location.href = 'project.php'
+                        }
+                    }
+                });
+            }
+            else{
+               alert("Invalid Input!")
+            }
         });
+
+        $("#clint_amount").on("keyup",function(){
+            $("#clint_tax").prop('disabled', false);
+        })
+
+        $("#clint_tax").on("change",function(){
+            var tax=$(this).val() ;
+            var amount=$("#clint_amount").val();
+            var percentAmount=(+tax * +amount) / 100;
+           $("#clint_tax_amount").val(percentAmount +' ('+tax+'%)');
+           $("#clint_tax_amount_div").show("slow");
+           $("#govt_tax_main_div").show("slow");
+           if( $("#govt_tax").val() != null){
+               // $("#govt_tax").on("change",function(){
+                   var tax=$("#govt_tax").val() ;
+                   var taxClint=parseInt($("#clint_tax").val());
+                   var amount=parseInt($("#clint_amount").val());
+                   var totalamount= ((taxClint * amount)  /100) + amount;
+
+                   var percentAmount=( +totalamount  * +tax) / 100;
+                   $("#govt_tax_amount").val(percentAmount +' ('+tax+'%)');
+                   $("#govt_tax_amount_div").show("slow");
+               // });
+           }
+        });
+
+        $("#govt_tax").on("change",function(){
+            var tax=$(this).val() ;
+            var taxClint=parseInt($("#clint_tax").val());
+            var amount=parseInt($("#clint_amount").val());
+            var totalamount= ((taxClint * amount)  /100) + amount;
+
+            var percentAmount=( +totalamount  * +tax) / 100;
+           $("#govt_tax_amount").val(percentAmount +' ('+tax+'%)');
+           $("#govt_tax_amount_div").show("slow");
         });
 
 
@@ -513,6 +614,45 @@ header("Location:index.php");
                 }
             });
         });
+
+        $("#mode").on("change",function(){
+            var mode=$("#mode").val();
+           if(mode == 'cheque'){
+               $("#cheque_main_div").show("slow");
+               $("#cash_main_div").show("slow");
+               $("#bank_main_div").show("slow");
+               $("#cash_mode_main_div").hide("slow");
+               $("#cash_mode").val('');
+           }
+           else if(mode == 'cash'){
+               $("#cheque_main_div").hide();
+               $("#cheque").val('');
+
+               $("#bank_main_div").hide();
+               $("#bank").val('');
+
+               $("#cash_main_div").hide();
+               $("#cash").val('');
+
+               $("#cash_mode_main_div").show("slow");
+           }
+        });
+        $("#cash_mode").on("change",function(){
+            var mode=$("#cash_mode").val();
+            if(mode == 'cash_hand'){
+                $("#cash").val('');
+                $("#cash_main_div").show("slow");
+                $("#bank_main_div").hide();
+                $("#bank").val('');
+
+            }
+            else if(mode == 'cash_bank'){
+                $("#cash").val('');
+                $("#cash_main_div").show("slow");
+                $("#bank_main_div").show("slow");
+            }
+        });
+
 
 
         $(".assign").on('change',function(event) {
@@ -541,10 +681,43 @@ header("Location:index.php");
 
             var rp_name = document.getElementById("rp_name").value
             var mode = document.getElementById("mode").value
-            var bank = document.getElementById("bank").value
             var cash = document.getElementById("cash").value
+            var bank = document.getElementById("bank").value
             var cheque = document.getElementById("cheque").value
+            var confirm=0;
+            if(mode == 'cheque'){
+                if(cheque !== '' && bank !== '' && cash !== ''){
+                    confirm =1;
+                }
+                else{
+                    confirm =0 ;
+                }
+            }
+            else if(mode == 'cash'){
+            var cash_mode=document.getElementById("cash_mode").value
+                if(cash_mode == 'cash_hand' ){
+                    if(cash !== ''){
+                        confirm = 1;
+                    }
+                    else{
+                        confirm=0;
+                    }
+                }
+                else if(cash_mode == 'cash_bank' ){
+                    if(cash !== '' && bank !== ''){
+                        confirm = 1;
+                    }
+                    else{
+                        confirm=0;
+                    }
+                }
+            }
+            else{
+               confirm =0;
+            }
 
+            if(confirm == 1 && rp_name !== null && mode !== null){
+                console.log("Yes")
             $.ajax({
                 url : "_add_payment.php",
                 type : "POST",
@@ -558,12 +731,14 @@ header("Location:index.php");
                     }
                 }
             });
+            }
+            else{
+                alert("Invalid data entered!");
+            }
 
         });
         
-        function deleteProject(id) {
-            alert(id)
-        }
+
 
         function changeApp() {
             document.getElementById("click_div").style.display = "inline";
@@ -572,5 +747,10 @@ header("Location:index.php");
 
 
     });
+    function deleteProject(id) {
+        if(confirm("Do you want to delete!") == true){
+       window.location.assign("_delete_project.php?id="+id);
+        }
+    }
 </script>
 </html>

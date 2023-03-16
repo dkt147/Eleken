@@ -1,6 +1,6 @@
 <?php
 
-$con = mysqli_connect("localhost","root","","eleken");
+$con = mysqli_connect("localhost","root","","reciving");
 
 if(!$con)
 {
