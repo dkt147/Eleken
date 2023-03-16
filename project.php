@@ -380,7 +380,7 @@ header("Location:index.php");
         <div class="tab-pane" id="6a">
             <br>
 
-            <h2>Summary
+            <h2>Summary<br>
                 <select class="form-control" name="sp_name" id="sp_name" style="width: 230px;display: inline">
                     <option selected disabled>Project</option>
                     <?php
@@ -433,7 +433,7 @@ header("Location:index.php");
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="onchangeTable">
 
                             <?php
                             include 'connection.php';
@@ -455,6 +455,27 @@ header("Location:index.php");
                         </table> </div>
                 </div>
             </div>
+
+            <?php
+
+            $dataPoints = array(
+                array("label"=> "Jan", "y"=> 60.0),
+                array("label"=> "Feb", "y"=> 6.5),
+                array("label"=> "Mar", "y"=> 4.6),
+                array("label"=> "Apr", "y"=> 2.4),
+                array("label"=> "May", "y"=> 1.9),
+                array("label"=> "Jun", "y"=> 1.8),
+                array("label"=> "Jul", "y"=> 1.5),
+                array("label"=> "Aug", "y"=> 1.5),
+                array("label"=> "Sep", "y"=> 1.3),
+                array("label"=> "Aug", "y"=> 0.9),
+                array("label"=> "Nov", "y"=> 0.8),
+                array("label"=> "Dec", "y"=> 0.8)
+            );
+
+            ?>
+
+            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
         </div>
     </div>
 </div>
@@ -652,11 +673,58 @@ header("Location:index.php");
     </div>
 </div>
 
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 </body>
+
 <script>
+
+    $("#sp_name").on('change',function(event) {
+
+        document.getElementById('onchangeTable').innerHTML = ""
+
+        var project = $(this).val()
+        console.log("Change Project ",project)
+
+        $.ajax({
+            url : "_project_list.php",
+            type : "POST",
+            data:{p_id:project},
+            success : function(data){
+                console.log(data)
+
+                document.getElementById('onchangeTable').innerHTML = data
+            }
+        });
+
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "CMS Market Share - 2017"
+            },
+            axisY: {
+                suffix: "%",
+                scaleBreaks: {
+                    autoCalculate: true
+                }
+            },
+            data: [{
+                type: "column",
+                yValueFormatString: "#,##0\"%\"",
+                indexLabel: "{y}",
+                indexLabelPlacement: "inside",
+                indexLabelFontColor: "white",
+                dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+            }]
+        });
+        chart.render();
+
+    });
+
     $(document).ready(function () {
         //Pagination full
         $('#paginationFull').DataTable({

@@ -7,9 +7,10 @@ $bank = $_POST['bank'];
 $cash = $_POST['cash'];
 $cheque = $_POST['cheque'];
 $column = ($_POST['mode'] == 'cash' ? 'cash_amount' : 'amount');
-
-$sql = "INSERT INTO `a_receivings`(`project_id`, `mode`, `bank_name`, `cheque_no`,`$column`) 
-VALUES('$rp_name','$mode','$bank','$cheque','$cash')";
+$month = date("m");
+$year = date("Y");
+$sql = "INSERT INTO `a_receivings`(`project_id`, `mode`, `bank_name`, `cheque_no`,`$column`,`month`,`year`) 
+VALUES('$rp_name','$mode','$bank','$cheque','$cash','$month','$year')";
 $res = mysqli_query($con,$sql);
 
 if($res){
