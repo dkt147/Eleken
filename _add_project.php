@@ -5,15 +5,15 @@ $category = $_POST['category'];
 $name = $_POST['project_name'];
 $status = $_POST['status'];
 $project_assign = $_POST['project_assign'];
-$clint_name = $_POST['clint_name'];
-$clint_amount = $_POST['clint_amount'];
-$clint_tax = $_POST['clint_tax'];
+$client_name = $_POST['client_name'];
+$client_amount = $_POST['client_amount'];
+$client_tax = $_POST['client_tax'];
 $govt_tax = $_POST['govt_tax'];
-$net_amount=( (int)$clint_amount + (float)$clint_tax ) - (float)$govt_tax;
+$net_amount=( (int)$client_amount + (float)$client_tax ) - (float)$govt_tax;
 
 
-$sql = "INSERT INTO `a_project`(`category_id`, `name`, `clint_name`,`clint_amount`, `clint_tex`, `govt_tax`, `net_amount`, `status`)
-        VALUES ('$category','$name','$clint_name','$clint_amount','$clint_tax','$govt_tax','$net_amount','$status')";
+$sql = "INSERT INTO `a_project`(`category_id`, `name`, `client_name`,`client_amount`, `client_tax`, `govt_tax`, `net_amount`, `status`)
+        VALUES ('$category','$name','$client_name','$client_amount','$client_tax','$govt_tax','$net_amount','$status')";
 $res = mysqli_query($con,$sql);
 
 if($res){
