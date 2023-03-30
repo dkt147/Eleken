@@ -65,11 +65,7 @@ header("Location:index.php");
 
             <h2>All Projects List
                 <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#projectModal" data-whatever="@mdo">Add new</button>
-
                 <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">Import</button>
-
-<!--                <input type="file" name="file" id="projectImportfile" class="input-large" style="display: none">-->
-<!--                <button type="submit" id="projectImport" name="projectImport" class="btn btn-primary button-loading" data-loading-text="Loading...">Import</button>-->
             </h2>
 
             <div class="container">
@@ -154,7 +150,6 @@ header("Location:index.php");
                                             $row1 = mysqli_fetch_assoc($result1);
                                             $perc = ((int)$row1['total'] / (int)$row['net_amount'])*100;
                                             echo $row1['total']." (".(int)$perc."%)";
-//                                            echo $row1['total']+$row['net_amount'];
                                         }else{
                                             echo "Not yet received";
                                         }
@@ -437,11 +432,7 @@ header("Location:index.php");
                     }
                     ?>
                 </select>
-
-<!--                <input type="date" name="date" id="date" class="form-control" style="width: 130px;display: inline">-->
                 <input type="month" name="month" id="month" class="form-control" style="width: 130px;display: inline">
-                <!--                <input name="year" id="year" class="date-own form-control" style="width: 130px;display: inline" type="number" min="1900" max="2099" step="1" value="2016">-->
-
 
             </h2>
 
@@ -470,7 +461,6 @@ header("Location:index.php");
                             </tr>
                             </thead>
                             <tbody id="onchangeTable">
-
 
                             <?php
                             include 'connection.php';
@@ -504,7 +494,6 @@ header("Location:index.php");
                                     <td><?php echo ($row['mode'] == 'cash') ?$row['cash_amount'] : $row['amount'];?></td>
                                     <td><?php echo $row['cheque_no']?></td>
                                     <td><?php echo $row['created_at']?></td>
-
 
                                 </tr>
                                 <?php
@@ -546,7 +535,6 @@ header("Location:index.php");
         </div>
     </div>
 </div>
-
 
 <!--Add new Project Modal Form-->
 <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -783,7 +771,6 @@ header("Location:index.php");
     </div>
 </div>
 
-
 <!--Import Project Modal Form-->
 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -799,12 +786,13 @@ header("Location:index.php");
                     <input type="file" name="file" id="projectImportfile" class="input-large">
 <br>
                     <a class="btn btn-primary" href="sample_project.csv" download>Download Sample</a>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary addNewExpense">Add</button>
+                <input type="submit" class="btn btn-primary" value="Add" name="Import"/>
             </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -982,13 +970,6 @@ header("Location:index.php");
 
     });
 
-    // $('#projectImport').click(function(){ $('#projectImportfile').trigger('click')});
-
-    // $('#projectImportfile').on('change',function (event) {
-    //     var import = $(this).val()
-    //     console.log("Change Group ",group)
-    //
-    // });
     $(document).ready(function () {
         //Pagination full
         $('#paginationFull').DataTable({
